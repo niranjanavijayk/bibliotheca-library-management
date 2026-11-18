@@ -165,7 +165,6 @@ Base URL `http://localhost:8080/api` · responses: `{ "data": …, "meta": … }
 
 ## 📄 Documentation
 - [SDLC document](docs/SDLC.md) – requirements, design, implementation, testing, deployment, maintenance
-- [Submission email](docs/SUBMISSION_EMAIL.md) · [Submission guide](docs/SUBMISSION_GUIDE.md) · [Presentation](docs/Bibliotheca_Presentation.pptx) · [Talking notes](docs/PRESENTATION_NOTES.md)
 
 ## 🧯 Troubleshooting
 | Problem | Fix |
