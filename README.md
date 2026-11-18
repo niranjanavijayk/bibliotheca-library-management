@@ -176,6 +176,3 @@ Base URL `http://localhost:8080/api` · responses: `{ "data": …, "meta": … }
 | Frontend shows "Cannot reach the server" | Start the backend and confirm `http://localhost:8080/api/health` returns OK. |
 | CORS error | Set `CORS_ORIGIN` to the exact frontend URL. |
 | Book covers not loading | Covers come from openlibrary.org; a generated cover is used when offline. |
-
-## 👤 Author
-**[Your Name]** · Beinex Internship · [GitHub](https://github.com/[username])
