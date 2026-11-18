@@ -1,0 +1,92 @@
+<app-page-header title="The Library Shelves" subtitle="Search, filter and sort every title in the collection.">
+  <button type="button" class="btn btn--accent" (click)="openAdd()"><app-icon name="plus" /> Add book</button>
+</app-page-header>
+
+<section class="toolbar" aria-label="Book filters">
+  <div class="toolbar__search">
+    <app-icon name="search" />
+    <input class="field__input" type="search" placeholder="Search by title, author or ISBN…" aria-label="Search books"
+           [ngModel]="q()" (ngModelChange)="setValue(q, $event)" />
+  </div>
+  <select class="field__input toolbar__select" aria-label="Filter by category" [ngModel]="category()" (ngModelChange)="setValue(category, $event)">
+    <option value="">All categories</option>
+    @for (c of categories(); track c.name) { <option [value]="c.name">{{ c.name }} ({{ c.count }})</option> }
+  </select>
+  <select class="field__input toolbar__select" aria-label="Filter by availability" [ngModel]="availability()" (ngModelChange)="setValue(availability, $event)">
+    <option value="all">Any availability</option>
+    <option value="available">Available</option>
+    <option value="unavailable">Out on loan</option>
+  </select>
+  <select class="field__input toolbar__select" aria-label="Sort by" [ngModel]="sort()" (ngModelChange)="setValue(sort, $event)">
+    <option value="title">Sort: Title</option>
+    <option value="author">Sort: Author</option>
+    <option value="category">Sort: Category</option>
+    <option value="year">Sort: Year</option>
+    <option value="copies">Sort: Availability</option>
+    <option value="added">Sort: Recently added</option>
+  </select>
+  <button type="button" class="btn btn--ghost" (click)="toggleOrder()" [attr.aria-label]="'Order: ' + order()">{{ order() === 'asc' ? '↑ A–Z' : '↓ Z–A' }}</button>
+  <div class="segmented" role="group" aria-label="View">
+    <button type="button" class="segmented__btn" [class.segmented__btn--active]="view() === 'shelf'" (click)="view.set('shelf')"><app-icon name="grid" [size]="16" /> Shelf</button>
+    <button type="button" class="segmented__btn" [class.segmented__btn--active]="view() === 'table'" (click)="view.set('table')"><app-icon name="list" [size]="16" /> Table</button>
+  </div>
+</section>
+
+@if (loading() && !books().length) {
+  <div class="loading"><div class="spinner"></div></div>
+} @else if (error()) {
+  <div class="card books__error"><app-icon name="alert" [size]="24" /> {{ error() }}
+    <button type="button" class="btn btn--primary" (click)="reload()">Retry</button></div>
+} @else if (!books().length) {
+  <app-empty-state [title]="hasFilters() ? 'No books match your search' : 'The shelves are empty'"
+                   [text]="hasFilters() ? 'Try a different keyword or clear the filters.' : 'Add your first book to start building the collection.'">
+    @if (hasFilters()) {
+      <button type="button" class="btn btn--ghost" (click)="clearFilters()">Clear filters</button>
+    } @else {
+      <button type="button" class="btn btn--accent" (click)="openAdd()">Add book</button>
+    }
+  </app-empty-state>
+} @else {
+  <p class="books__count">{{ total() }} book{{ total() === 1 ? '' : 's' }} found</p>
+
+  @switch (view()) {
+    @case ('shelf') { <app-book-shelf [books]="books()" /> }
+    @case ('table') {
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th></th><th>Title</th><th>Category</th><th>ISBN</th><th>Year</th><th>Copies</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            @for (b of books(); track b.id) {
+              <tr>
+                <td><app-book-cover [title]="b.title" [author]="b.author" [src]="b.coverUrl" size="xs" /></td>
+                <td><a class="table__strong link" [routerLink]="['/app/books', b.id]">{{ b.title }}</a><br /><span class="table__muted">{{ b.author }}</span></td>
+                <td>{{ b.category }}</td>
+                <td class="table__muted">{{ b.isbn }}</td>
+                <td>{{ b.publishedYear || '—' }}</td>
+                <td>{{ b.availableCopies }} / {{ b.totalCopies }}</td>
+                <td><app-status-badge [status]="b.available ? 'available' : 'unavailable'" [label]="b.available ? 'Available' : 'Out'" /></td>
+                <td>
+                  <div class="table__actions">
+                    <a class="btn btn--ghost btn--icon" [routerLink]="['/app/books', b.id]" aria-label="View book"><app-icon name="eye" /></a>
+                    <button type="button" class="btn btn--ghost btn--icon" aria-label="Edit book" (click)="openEdit(b)"><app-icon name="edit" /></button>
+                    <button type="button" class="btn btn--ghost btn--icon" aria-label="Issue book" [disabled]="!b.available" (click)="issuing.set(b)"><app-icon name="loans" /></button>
+                    <button type="button" class="btn btn--ghost btn--icon" aria-label="Delete book" (click)="remove(b)"><app-icon name="trash" /></button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <app-pagination [page]="page()" [pageSize]="pageSize" [total]="total()" (pageChange)="goToPage($event)" />
+}
+
+@if (formOpen()) {
+  <app-book-form [book]="editing()" [categories]="categoryNames()" (saved)="onSaved()" (closed)="formOpen.set(false)" />
+}
+@if (issuing(); as b) {
+  <app-issue-loan-modal [book]="b" (issued)="onIssued()" (closed)="issuing.set(null)" />
+}

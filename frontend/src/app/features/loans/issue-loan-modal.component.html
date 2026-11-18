@@ -1,0 +1,53 @@
+<app-modal title="Issue a book" (closed)="closed.emit()">
+  @if (loading()) {
+    <div class="loading"><div class="spinner"></div></div>
+  } @else {
+    <form class="il" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (book(); as b) {
+        <div class="il__fixed">
+          <app-book-cover [title]="b.title" [author]="b.author" [src]="b.coverUrl" size="sm" />
+          <div><strong>{{ b.title }}</strong><br /><span class="table__muted">{{ b.author }} · {{ b.availableCopies }} of {{ b.totalCopies }} available</span></div>
+        </div>
+      } @else {
+        <div class="field">
+          <label class="field__label" for="il-book">Book <span class="field__label-req">*</span></label>
+          <select id="il-book" class="field__input" [class.field__input--error]="error('bookId', 'Book')" formControlName="bookId">
+            <option [ngValue]="null" disabled>Select an available book…</option>
+            @for (b of books(); track b.id) {
+              <option [ngValue]="b.id">{{ b.title }} · {{ b.author }} ({{ b.availableCopies }} left)</option>
+            }
+          </select>
+          @if (error('bookId', 'Book'); as msg) { <span class="field__error">{{ msg }}</span> }
+          @if (!books().length) { <span class="field__hint">No books are available right now.</span> }
+        </div>
+      }
+
+      @if (member(); as m) {
+        <div class="il__fixed"><div><strong>{{ m.name }}</strong><br /><span class="table__muted">{{ m.email }} · {{ m.activeLoans }} active loan(s)</span></div></div>
+      } @else {
+        <div class="field">
+          <label class="field__label" for="il-member">Member <span class="field__label-req">*</span></label>
+          <select id="il-member" class="field__input" [class.field__input--error]="error('memberId', 'Member')" formControlName="memberId">
+            <option [ngValue]="null" disabled>Select a member…</option>
+            @for (m of members(); track m.id) {
+              <option [ngValue]="m.id">{{ m.name }} · {{ m.email }}</option>
+            }
+          </select>
+          @if (error('memberId', 'Member'); as msg) { <span class="field__error">{{ msg }}</span> }
+        </div>
+      }
+
+      <div class="field">
+        <label class="field__label" for="il-days">Loan period (days)</label>
+        <input id="il-days" type="number" class="field__input" [class.field__input--error]="error('days', 'Loan period')" formControlName="days" />
+        @if (error('days', 'Loan period'); as msg) { <span class="field__error">{{ msg }}</span> }
+        <span class="field__hint">Due date: <strong>{{ dueDate() | date: 'EEEE, d MMMM yyyy' }}</strong></span>
+      </div>
+
+      <div class="il__footer">
+        <button type="button" class="btn btn--ghost" (click)="closed.emit()">Cancel</button>
+        <button type="submit" class="btn btn--accent" [disabled]="saving()">{{ saving() ? 'Issuing…' : 'Issue book' }}</button>
+      </div>
+    </form>
+  }
+</app-modal>

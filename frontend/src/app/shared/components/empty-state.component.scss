@@ -1,0 +1,3 @@
+@use 'variables' as *;
+.empty { text-align: center; padding: space(8) space(4); display: flex; flex-direction: column; align-items: center; gap: space(2);
+  &__art { font-size: 3rem; } &__title { font-size: 1.3rem; } &__text { color: $color-muted; max-width: 360px; margin-bottom: space(3); } }

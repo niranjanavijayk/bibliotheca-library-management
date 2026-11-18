@@ -1,0 +1,3 @@
+@use 'variables' as *;
+.bk { display: flex; align-items: center; gap: space(3); }
+.loans__error { display: flex; gap: space(3); align-items: center; color: #a83d31; .btn { margin-left: auto; } }

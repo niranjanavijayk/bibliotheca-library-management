@@ -1,0 +1,44 @@
+<div class="shell">
+  <aside class="sidebar" [class.sidebar--open]="menuOpen()">
+    <a routerLink="/" class="sidebar__brand" aria-label="Bibliotheca home">
+      <span class="sidebar__logo">📚</span>
+      <span class="sidebar__brand-text">
+        <strong>Bibliotheca</strong>
+        <small>Your shelf, your story</small>
+      </span>
+    </a>
+
+    <nav class="sidebar__nav" aria-label="Main">
+      @for (item of nav; track item.path) {
+        <a class="sidebar__link" [routerLink]="item.path" routerLinkActive="sidebar__link--active" (click)="menuOpen.set(false)">
+          <app-icon [name]="item.icon" [size]="20" />
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <a routerLink="/" class="sidebar__link sidebar__link--footer">
+      <app-icon name="back" [size]="18" />
+      <span>Welcome page</span>
+    </a>
+  </aside>
+
+  @if (menuOpen()) {
+    <div class="shell__backdrop" (click)="menuOpen.set(false)" role="presentation"></div>
+  }
+
+  <div class="shell__main">
+    <header class="topbar">
+      <button type="button" class="btn btn--ghost btn--icon topbar__menu" aria-label="Open menu" (click)="menuOpen.set(true)">
+        <app-icon name="menu" [size]="22" />
+      </button>
+      <span class="topbar__title">📚 Bibliotheca</span>
+    </header>
+    <main class="shell__content page-enter">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<app-toast-container />
+<app-confirm-host />

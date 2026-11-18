@@ -1,0 +1,15 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.back { display: inline-flex; align-items: center; gap: space(2); color: $color-terracotta-dark; font-weight: 600; margin-bottom: space(4); &:hover { text-decoration: underline; } }
+.section-title { margin: space(7) 0 space(4); font-size: 1.5rem; }
+.detail { display: grid; gap: space(6); @include respond(md) { grid-template-columns: 240px 1fr; padding: space(6); }
+  &__cover { width: 200px; margin: 0 auto; @include respond(md) { width: 240px; } }
+  &__tags { display: flex; gap: space(3); align-items: center; flex-wrap: wrap; margin-bottom: space(3); }
+  &__category { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; color: $color-terracotta; }
+  &__title { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+  &__author { color: $color-muted; font-size: 1.1rem; margin-top: space(1); font-style: italic; font-family: $font-display; }
+  &__desc { margin-top: space(4); max-width: 640px; }
+  &__actions { display: flex; flex-wrap: wrap; gap: space(2); margin-top: space(5); } }
+.meta { display: grid; gap: space(4); grid-template-columns: repeat(2, 1fr); margin: space(5) 0 0; padding: space(4) 0 0; border-top: 1px solid $color-line; @include respond(sm) { grid-template-columns: repeat(4, 1fr); }
+  dt { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: $color-muted; font-weight: 600; } dd { margin: 2px 0 0; font-weight: 600; color: $color-forest-dark; } }

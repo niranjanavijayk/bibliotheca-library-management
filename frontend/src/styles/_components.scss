@@ -1,0 +1,95 @@
+@use 'sass:map';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// ---------- Buttons (BEM: .btn, .btn--primary ...) ----------
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: space(2);
+  border: 1px solid transparent; border-radius: $radius-sm;
+  padding: 0.6rem 1.1rem; font-weight: 600; font-size: 0.9rem; line-height: 1.2;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  @include focus-ring;
+
+  &:active:not(:disabled) { transform: translateY(1px); }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  &--primary { @include button-variant($color-forest, #fff, $color-forest-dark); }
+  &--accent { @include button-variant($color-terracotta, #fff, $color-terracotta-dark); }
+  &--danger { @include button-variant(#b94a3e, #fff, #9c3a30); }
+  &--ghost { background: transparent; color: $color-forest; border-color: $color-line;
+    &:hover:not(:disabled) { background: $color-forest-light; } }
+  &--sm { padding: 0.38rem 0.7rem; font-size: 0.8rem; }
+  &--icon { padding: 0.45rem; border-radius: $radius-sm; }
+  &--block { width: 100%; }
+}
+
+// ---------- Form fields ----------
+.field {
+  display: flex; flex-direction: column; gap: space(1);
+  &__label { font-size: 0.8rem; font-weight: 600; color: $color-forest-dark; }
+  &__label-req { color: $color-terracotta; }
+  &__input {
+    width: 100%; padding: 0.62rem 0.8rem; font: inherit; color: $color-ink;
+    background: $color-paper; border: 1px solid $color-line; border-radius: $radius-sm;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    &:focus { outline: none; border-color: $color-forest; box-shadow: 0 0 0 3px rgba($color-forest, 0.15); }
+    &--error { border-color: #b94a3e; background: #fdf3f1; }
+  }
+  &__error { font-size: 0.78rem; color: #b94a3e; }
+  &__hint { font-size: 0.75rem; color: $color-muted; }
+}
+
+// ---------- Card ----------
+.card { @include card;
+  &__title { font-size: 1.1rem; margin-bottom: space(4); }
+}
+
+// ---------- Status badge ----------
+.badge {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.74rem; font-weight: 600;
+  text-transform: capitalize; white-space: nowrap;
+  &::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  @each $name, $_ in $status-colors {
+    &--#{$name} { @include badge-colors($name); }
+  }
+}
+
+// ---------- Data table ----------
+.table-wrap { @include card(0); overflow-x: auto; }
+.table {
+  min-width: 640px;
+  th { text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: $color-muted; padding: 0.85rem 1rem; background: $color-paper; border-bottom: 1px solid $color-line; white-space: nowrap; }
+  td { padding: 0.8rem 1rem; border-bottom: 1px solid #f0e8da; vertical-align: middle; }
+  tbody tr { transition: background 0.12s; &:hover { background: #fdfaf4; } &:last-child td { border-bottom: 0; } }
+  &__actions { display: flex; gap: space(1); justify-content: flex-end; }
+  &__muted { color: $color-muted; font-size: 0.85rem; }
+  &__strong { font-weight: 600; color: $color-forest-dark; }
+  &__row--overdue { background: #fdf3f1; }
+}
+
+// ---------- Toolbar ----------
+.toolbar {
+  display: flex; flex-wrap: wrap; gap: space(3); align-items: center; margin-bottom: space(5);
+  &__search { position: relative; flex: 1 1 260px;
+    app-icon { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: $color-muted; }
+    input { padding-left: 2.5rem; } }
+  &__select { width: auto; min-width: 150px; }
+  &__spacer { flex: 1; }
+}
+
+// ---------- Segmented control ----------
+.segmented {
+  display: inline-flex; background: $color-paper; border: 1px solid $color-line; border-radius: $radius-sm; padding: 3px;
+  &__btn { border: 0; background: transparent; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600;
+    color: $color-muted; display: inline-flex; align-items: center; gap: 0.35rem;
+    &--active { background: $color-forest; color: #fff; } }
+}
+
+// ---------- Misc ----------
+.link { color: $color-terracotta-dark; font-weight: 600; &:hover { text-decoration: underline; } }
+.grid-2 { display: grid; gap: space(4); grid-template-columns: 1fr; @include respond(sm) { grid-template-columns: 1fr 1fr; } }
+.spinner { width: 28px; height: 28px; border: 3px solid $color-line; border-top-color: $color-forest; border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loading { display: grid; place-items: center; padding: space(8); }
+.page-enter { animation: fade-up 0.4s ease both; }

@@ -1,0 +1,32 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.dash {
+  &__stats { display: grid; gap: space(4); grid-template-columns: 1fr; margin-bottom: space(5);
+    @include respond(sm) { grid-template-columns: repeat(2, 1fr); } @include respond(lg) { grid-template-columns: repeat(4, 1fr); } }
+  &__grid { display: grid; gap: space(4); margin-bottom: space(5); @include respond(md) { grid-template-columns: 1fr 1fr; } }
+  &__panel { min-width: 0; }
+  &__panel-head { display: flex; justify-content: space-between; align-items: baseline; }
+  &__subtitle { margin-top: space(6); }
+  &__meter-text { margin-top: space(3); color: $color-muted; font-size: 0.9rem; }
+  &__error { display: flex; flex-wrap: wrap; gap: space(4); align-items: center; color: #a83d31; h3 { color: inherit; } p { color: $color-muted; } .btn { margin-left: auto; } }
+}
+
+.meter { height: 14px; background: #eadfca; border-radius: 99px; overflow: hidden;
+  &__fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, $color-forest, #5b8c6c); transition: width 0.8s ease; } }
+
+.bars { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: space(3);
+  &__row { display: grid; grid-template-columns: 110px 1fr 28px; align-items: center; gap: space(3); font-size: 0.85rem; }
+  &__label { color: $color-forest-dark; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  &__track { height: 10px; background: #f0e8da; border-radius: 99px; overflow: hidden; }
+  &__fill { display: block; height: 100%; border-radius: inherit; transition: width 0.8s ease;
+    &--0 { background: $color-forest; } &--1 { background: $color-terracotta; } &--2 { background: $color-gold; } &--3 { background: #5b7fa0; } }
+  &__count { text-align: right; color: $color-muted; font-weight: 600; }
+}
+
+.feed { list-style: none; margin: 0; padding: 0;
+  &__item { display: flex; align-items: center; gap: space(3); padding: space(3) 0; border-bottom: 1px solid #f0e8da; &:last-child { border-bottom: 0; } }
+  &__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  &__title { font-weight: 600; color: $color-forest-dark; @include line-clamp(1); &:hover { color: $color-terracotta-dark; } }
+  &__side { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  &__fine { font-size: 0.75rem; color: #a83d31; font-weight: 600; } }

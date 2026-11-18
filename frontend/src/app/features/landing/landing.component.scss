@@ -1,0 +1,86 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+:host { display: block; background: $color-cream; }
+
+// ---------- Hero: dark panelled wall, glowing title, leather spines ----------
+.hero {
+  --u: clamp(2.6px, 0.56vw, 4px);
+  position: relative; overflow: hidden; text-align: center; color: $color-glow;
+  min-height: 100vh; padding: space(7) space(4) 0; display: flex; flex-direction: column; align-items: center;
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 28%, rgba(176, 108, 48, 0.32), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0 2px, transparent 2px 190px),
+    repeating-linear-gradient(0deg, rgba(255, 220, 160, 0.025) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg, #3a2314 0%, $color-wood-panel 55%, #1a0e08 100%);
+  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.7);
+  &::before { content: ''; position: absolute; inset: 22px; border: 1px solid rgba(255, 220, 160, 0.08); border-radius: 6px; pointer-events: none; }
+  > * { position: relative; z-index: 1; }
+
+  &__glow { position: absolute !important; width: 260px; height: 420px; top: 30%; border-radius: 50%; filter: blur(60px); background: rgba(255, 170, 70, 0.14); z-index: 0 !important;
+    &--left { left: -60px; } &--right { right: -60px; } }
+  &__eyebrow { margin-top: space(5); letter-spacing: 0.32em; text-transform: uppercase; font-size: 0.78rem; color: #c9a870; animation: fade-in 1s ease both; }
+  &__title { margin-top: space(4); font-size: clamp(3.4rem, 12vw, 7.2rem); font-weight: 800; letter-spacing: -0.01em; color: #f8e8c2;
+    text-shadow: 0 0 34px rgba(246, 190, 100, 0.45), 0 2px 0 #1a0e08; animation: fade-up 0.9s ease both; }
+  &__lead { margin-top: space(5); font-family: $font-display; font-size: clamp(1.1rem, 2.4vw, 1.6rem); line-height: 1.5; color: #ead7ae; max-width: 640px; animation: fade-up 1.1s ease both; }
+  &__cta { display: flex; flex-wrap: wrap; gap: space(4); justify-content: center; margin-top: space(6); animation: fade-up 1.3s ease both; }
+  &__stats { display: flex; gap: space(7); list-style: none; padding: 0; margin: space(6) 0 0; animation: fade-in 1.6s ease both;
+    li { display: flex; flex-direction: column; } strong { font-family: $font-display; font-size: 1.9rem; color: #f8e8c2; line-height: 1; }
+    span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: #b99a66; margin-top: 4px; } }
+  &__shelf { width: 100%; height: 26px; margin-top: 0; @include wood-plank(26px); box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.5), 0 -20px 40px rgba(0, 0, 0, 0.5); }
+}
+
+.leather-btn {
+  display: inline-flex; align-items: center; justify-content: center; padding: 0.85rem 1.7rem; border-radius: 10px; font-weight: 600; font-size: 1rem;
+  color: #f5e2b6; letter-spacing: 0.02em; transition: transform 0.15s, filter 0.15s; @include focus-ring($color-gold);
+  background: linear-gradient(180deg, #6b4630, #3d2517); border: 2px solid #b08a4e;
+  box-shadow: inset 0 1px 0 rgba(255, 230, 170, 0.35), inset 0 -3px 6px rgba(0, 0, 0, 0.4), 0 6px 16px rgba(0, 0, 0, 0.5);
+  &:hover { transform: translateY(-2px); filter: brightness(1.15); }
+  &--primary { background: linear-gradient(180deg, #b8693a, #7d3a18); border-color: #d8b068; }
+}
+
+// ---------- Antique book spines (pure CSS) ----------
+.spines { display: flex; align-items: flex-end; justify-content: center; gap: 1px; margin-top: space(7); width: 100%; padding: 0 space(2); }
+.spine {
+  position: relative; flex-shrink: 0; border-radius: 2px 2px 0 0; display: flex; flex-direction: column; align-items: center; padding-top: 6%;
+  gap: 6%; transition: transform 0.25s; transform-origin: bottom;
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.05) 18%, rgba(255, 240, 200, 0.18) 50%, rgba(0, 0, 0, 0.1) 80%, rgba(0, 0, 0, 0.55) 100%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.05) 0 1px, transparent 1px 3px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  &:hover { transform: translateY(-8px); }
+  &__band { width: 100%; height: 3px; background: linear-gradient(90deg, #6e5420, #e5c670, #6e5420); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4); }
+  &__ornament { width: 74%; height: 24%; border-top: 2px solid #d8b068; border-bottom: 2px solid #d8b068;
+    background: repeating-linear-gradient(45deg, rgba(222, 184, 100, 0.6) 0 2px, transparent 2px 7px), repeating-linear-gradient(-45deg, rgba(222, 184, 100, 0.6) 0 2px, transparent 2px 7px), rgba(0, 0, 0, 0.18); }
+  &__plate { width: 78%; padding: 6% 2%; text-align: center; font-size: clamp(5px, 0.7vw, 8px); text-transform: uppercase; letter-spacing: 0.05em; font-family: $font-display;
+    color: #f0d89a; border: 1px solid #d8b068; background: rgba(40, 20, 10, 0.55); overflow: hidden; }
+}
+
+// ---------- Sections ----------
+.section { max-width: 1200px; margin: 0 auto; padding: space(8) space(4);
+  &--dark { max-width: none; background: linear-gradient(180deg, $color-wood-panel, #1a0e08); color: #ead7ae; }
+  &__head { text-align: center; max-width: 640px; margin: 0 auto space(7); }
+  &__eyebrow { text-transform: uppercase; letter-spacing: 0.26em; font-size: 0.72rem; color: $color-terracotta; font-weight: 700; &--light { color: $color-gold; } }
+  &__title { font-size: clamp(1.8rem, 4vw, 2.6rem); margin-top: space(2); &--light { color: #f8e8c2; } }
+  &__lead { margin-top: space(3); color: $color-muted; font-size: 1.05rem; } }
+
+.display { max-width: 900px; margin: 0 auto; padding: space(6) space(4) 0; border-radius: $radius-md 
+  $radius-md 0 0; background: linear-gradient(180deg, #3a2314, $color-wood-panel); box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6), $shadow-lg;
+  &__row { display: flex; justify-content: center; align-items: flex-end; gap: 3%; }
+  &__book { width: 17%; max-width: 130px; animation: rise 0.8s ease both; transition: transform 0.25s; &:hover { transform: translateY(-10px) rotate(-1.5deg); } app-book-cover { width: 100%; } }
+  &__plank { @include wood-plank(22px); margin: 0 calc(-1 * #{space(4)}); border-radius: 0 0 4px 4px; } }
+@keyframes rise { from { opacity: 0; transform: translateY(40px) rotate(4deg); } to { opacity: 1; transform: none; } }
+
+.features { display: grid; gap: space(4); grid-template-columns: 1fr; @include respond(sm) { grid-template-columns: repeat(2, 1fr); } @include respond(lg) { grid-template-columns: repeat(3, 1fr); } }
+.feature { @include card(space(6)); position: relative; transition: transform 0.2s, box-shadow 0.2s; &:hover { transform: translateY(-4px); box-shadow: $shadow-md; }
+  &__icon { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 14px; background: $color-forest-light; color: $color-terracotta; margin-bottom: space(4); border: 1px solid $color-line; }
+  &__title { font-size: 1.2rem; margin-bottom: space(2); } &__text { color: $color-muted; } }
+
+.steps { list-style: none; margin: 0 auto; padding: 0; max-width: 1100px; display: grid; gap: space(6); @include respond(md) { grid-template-columns: repeat(3, 1fr); }
+  &__n { font-family: $font-display; font-size: 3.2rem; color: $color-gold; line-height: 1; }
+  &__title { color: #f8e8c2; margin: space(2) 0; font-size: 1.35rem; } &__text { color: #c9b48a; } }
+
+.cta { text-align: center; padding: space(8) space(4); display: flex; flex-direction: column; align-items: center; gap: space(4);
+  &__title { font-size: clamp(1.8rem, 4vw, 2.6rem); } &__text { color: $color-muted; } }
+
+.footer { display: flex; flex-wrap: wrap; gap: space(3); justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: space(5) space(4);
+  border-top: 1px solid $color-line; color: $color-muted; font-size: 0.85rem; }

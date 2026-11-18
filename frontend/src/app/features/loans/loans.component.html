@@ -1,0 +1,67 @@
+<app-page-header title="Loan Desk" subtitle="Issue books, process returns and keep an eye on due dates.">
+  <button type="button" class="btn btn--accent" (click)="issuing.set(true)"><app-icon name="plus" /> Issue a book</button>
+</app-page-header>
+
+<section class="toolbar" aria-label="Loan filters">
+  <div class="segmented" role="tablist" aria-label="Loan status">
+    @for (t of tabs; track t.id) {
+      <button type="button" role="tab" class="segmented__btn" [class.segmented__btn--active]="tab() === t.id" [attr.aria-selected]="tab() === t.id" (click)="selectTab(t.id)">
+        {{ t.label }}
+      </button>
+    }
+  </div>
+  <div class="toolbar__search">
+    <app-icon name="search" />
+    <input class="field__input" type="search" placeholder="Search by book or member…" aria-label="Search loans" [ngModel]="q()" (ngModelChange)="onSearch($event)" />
+  </div>
+</section>
+
+@if (loading() && !loans().length) {
+  <div class="loading"><div class="spinner"></div></div>
+} @else if (error()) {
+  <div class="card loans__error"><app-icon name="alert" [size]="24" /> {{ error() }}
+    <button type="button" class="btn btn--primary" (click)="reload()">Retry</button></div>
+} @else if (!loans().length) {
+  @switch (tab()) {
+    @case ('overdue') { <app-empty-state title="Nothing overdue" text="Every borrowed book is within its due date." /> }
+    @case ('returned') { <app-empty-state title="No returns yet" text="Returned loans will appear here." /> }
+    @default {
+      <app-empty-state title="No loans found" text="Issue a book to a member to get started.">
+        <button type="button" class="btn btn--accent" (click)="issuing.set(true)">Issue a book</button>
+      </app-empty-state>
+    }
+  }
+} @else {
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Book</th><th>Member</th><th>Issued</th><th>Due</th><th>Status</th><th>Fine</th><th></th></tr></thead>
+      <tbody>
+        @for (l of loans(); track l.id) {
+          <tr [class.table__row--overdue]="l.status === 'overdue'">
+            <td>
+              <div class="bk">
+                <app-book-cover [title]="l.bookTitle" [author]="l.bookAuthor" [src]="l.bookCover" size="xs" />
+                <div><a class="table__strong link" [routerLink]="['/app/books', l.bookId]">{{ l.bookTitle }}</a><br /><span class="table__muted">{{ l.bookAuthor }}</span></div>
+              </div>
+            </td>
+            <td><a class="link" [routerLink]="['/app/members', l.memberId]">{{ l.memberName }}</a></td>
+            <td>{{ l.issuedAt | date: 'd MMM yyyy' }}</td>
+            <td>{{ l.dueDate | date: 'd MMM yyyy' }}</td>
+            <td><app-status-badge [status]="l.status" [label]="l | dueLabel" /></td>
+            <td>{{ l.fine ? (l.fine | currency: 'INR' : 'symbol' : '1.0-0') : '—' }}</td>
+            <td>
+              @if (l.status !== 'returned') {
+                <div class="table__actions">
+                  <button type="button" class="btn btn--ghost btn--sm" [disabled]="busyId() === l.id || l.status === 'overdue' || l.renewals >= 2" (click)="renewLoan(l)"><app-icon name="renew" [size]="14" /> Renew</button>
+                  <button type="button" class="btn btn--primary btn--sm" [disabled]="busyId() === l.id" (click)="returnLoan(l)"><app-icon name="return" [size]="14" /> Return</button>
+                </div>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (issuing()) { <app-issue-loan-modal (issued)="onIssued()" (closed)="issuing.set(false)" /> }

@@ -1,0 +1,94 @@
+<section class="hero">
+  <div class="hero__glow hero__glow--left"></div>
+  <div class="hero__glow hero__glow--right"></div>
+
+  <p class="hero__eyebrow">Library Management System</p>
+  <h1 class="hero__title">Bibliotheca</h1>
+  <p class="hero__lead">Where timeless stories await curious minds,<br />and every page turns into a quiet journey.</p>
+
+  <div class="hero__cta">
+    <a routerLink="/app/dashboard" class="leather-btn leather-btn--primary">Enter the Library →</a>
+    <a routerLink="/app/books" class="leather-btn">Browse the Shelves</a>
+  </div>
+
+  @if (stats(); as s) {
+    <ul class="hero__stats" aria-label="Library at a glance">
+      <li><strong>{{ s.totalBooks }}</strong><span>Titles</span></li>
+      <li><strong>{{ s.totalMembers }}</strong><span>Members</span></li>
+      <li><strong>{{ s.issuedBooks }}</strong><span>On loan</span></li>
+    </ul>
+  }
+
+  <div class="spines" aria-hidden="true">
+    @for (s of spines; track $index) {
+      <div class="spine" [style.background-color]="s.c" [style.height]="'calc(var(--u) * ' + s.h + ')'" [style.width]="'calc(var(--u) * ' + s.w + ')'">
+        @for (b of s.bandList; track $index) { <span class="spine__band"></span> }
+        @if (s.ornate) { <span class="spine__ornament"></span> }
+        @if (s.plate) { <span class="spine__plate">{{ s.plate }}</span> }
+      </div>
+    }
+  </div>
+  <div class="hero__shelf"></div>
+</section>
+
+<section class="section">
+  <div class="section__head">
+    <span class="section__eyebrow">From the collection</span>
+    <h2 class="section__title">Now on the shelves</h2>
+    <p class="section__lead">A glimpse of the catalogue. Every title lives on a shelf you can browse, search and borrow from.</p>
+  </div>
+  <div class="display">
+    <div class="display__row">
+      @for (b of heroBooks; track b.title; let i = $index) {
+        <div class="display__book" [style.animation-delay.s]="i * 0.12">
+          <app-book-cover [title]="b.title" [author]="b.author" [src]="b.src" size="md" />
+        </div>
+      }
+    </div>
+    <div class="display__plank"></div>
+  </div>
+</section>
+
+<section id="features" class="section">
+  <div class="section__head">
+    <span class="section__eyebrow">What's inside</span>
+    <h2 class="section__title">Everything a library needs</h2>
+    <p class="section__lead">Built for librarians who would rather spend time with readers than with ledgers.</p>
+  </div>
+  <div class="features">
+    @for (f of features; track f.title) {
+      <article class="feature">
+        <span class="feature__icon"><app-icon [name]="f.icon" [size]="24" /></span>
+        <h3 class="feature__title">{{ f.title }}</h3>
+        <p class="feature__text">{{ f.text }}</p>
+      </article>
+    }
+  </div>
+</section>
+
+<section id="how" class="section section--dark">
+  <div class="section__head">
+    <span class="section__eyebrow section__eyebrow--light">How it works</span>
+    <h2 class="section__title section__title--light">Three steps to a happier library</h2>
+  </div>
+  <ol class="steps">
+    @for (s of steps; track s.n) {
+      <li class="steps__item">
+        <span class="steps__n">{{ s.n }}</span>
+        <h3 class="steps__title">{{ s.title }}</h3>
+        <p class="steps__text">{{ s.text }}</p>
+      </li>
+    }
+  </ol>
+</section>
+
+<section class="cta">
+  <h2 class="cta__title">Ready to open the doors?</h2>
+  <p class="cta__text">Step inside and see your library the way it was meant to be seen.</p>
+  <a routerLink="/app/dashboard" class="leather-btn leather-btn--primary">Enter the Library →</a>
+</section>
+
+<footer class="footer">
+  <span>📚 Bibliotheca · Your shelf, your story</span>
+  <span>Built with Angular, Go and PostgreSQL</span>
+</footer>

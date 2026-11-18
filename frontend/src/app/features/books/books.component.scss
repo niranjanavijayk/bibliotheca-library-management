@@ -1,0 +1,3 @@
+@use 'variables' as *;
+.books { &__count { color: $color-muted; font-size: 0.85rem; margin-bottom: space(3); }
+  &__error { display: flex; gap: space(3); align-items: center; color: #a83d31; .btn { margin-left: auto; } } }

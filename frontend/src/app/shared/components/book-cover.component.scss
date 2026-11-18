@@ -1,0 +1,23 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+:host { display: block; position: relative; aspect-ratio: 2 / 3; border-radius: 3px 8px 8px 3px; overflow: hidden;
+  box-shadow: -2px 0 0 rgba(0, 0, 0, 0.18) inset, 3px 4px 10px rgba(0, 0, 0, 0.28); background: $color-paper; }
+
+// Sizes as a map-driven modifier set
+$sizes: (xs: 34px, sm: 64px, md: 130px, lg: 240px);
+@each $name, $w in $sizes { :host(.cover--#{$name}) { width: $w; } }
+
+.cover {
+  &__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  &__fallback { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
+    align-items: center; text-align: center; gap: 0.4em; padding: 12% 10%; color: #fff6e6;
+    &::after { content: ''; position: absolute; left: 6%; top: 0; bottom: 0; width: 2px; background: rgba(255, 255, 255, 0.2); } }
+  &__ornament { width: 36%; height: 2px; background: rgba(255, 246, 230, 0.7); }
+  &__title { font-family: $font-display; font-weight: 700; font-size: 0.78em; line-height: 1.15; @include line-clamp(4); }
+  &__author { font-size: 0.55em; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; @include line-clamp(2); }
+}
+:host(.cover--xs) .cover__title, :host(.cover--xs) .cover__author, :host(.cover--xs) .cover__ornament { display: none; }
+:host(.cover--md) { font-size: 15px; }
+:host(.cover--lg) { font-size: 26px; }
+:host(.cover--sm) { font-size: 10px; }

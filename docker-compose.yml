@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bib
+      POSTGRES_PASSWORD: bib
+      POSTGRES_DB: bibliotheca
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bib -d bibliotheca"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgres://bib:bib@db:5432/bibliotheca?sslmode=disable
+      CORS_ORIGIN: http://localhost:4200
+      SEED: "true"
+      PORT: "8080"
+    ports: ["8080:8080"]
+    depends_on:
+      db: { condition: service_healthy }
+
+volumes:
+  pgdata:

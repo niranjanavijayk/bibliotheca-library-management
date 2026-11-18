@@ -1,0 +1,14 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.modal {
+  position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: space(4);
+  background: rgba(31, 51, 40, 0.55); backdrop-filter: blur(3px); animation: fade-in 0.15s ease;
+  &__panel { width: 100%; max-width: 520px; max-height: calc(100vh - 2rem); display: flex; flex-direction: column;
+    background: $color-paper; border-radius: $radius-lg; box-shadow: $shadow-lg; animation: fade-up 0.25s ease;
+    &--wide { max-width: 760px; } }
+  &__header { display: flex; justify-content: space-between; align-items: center; padding: space(4) space(5);
+    border-bottom: 1px solid $color-line; }
+  &__title { font-size: 1.25rem; }
+  &__body { padding: space(5); overflow-y: auto; }
+}

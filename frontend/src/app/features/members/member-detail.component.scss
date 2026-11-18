@@ -1,0 +1,14 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+.back { display: inline-flex; align-items: center; gap: space(2); color: $color-terracotta-dark; font-weight: 600; margin-bottom: space(4); &:hover { text-decoration: underline; } }
+.section-title { margin: space(7) 0 space(4); font-size: 1.5rem; }
+.bk { display: flex; align-items: center; gap: space(3); }
+.profile { display: grid; gap: space(5); @include respond(md) { grid-template-columns: 120px 1fr; padding: space(6); }
+  &__avatar { width: 110px; height: 110px; border-radius: 50%; display: grid; place-items: center; font-family: $font-display; font-size: 2.4rem; font-weight: 700; color: $color-glow;
+    background: linear-gradient(145deg, $color-terracotta, $color-forest); border: 4px solid $color-gold; box-shadow: $shadow-md; margin: 0 auto; }
+  &__tags { display: flex; gap: space(3); align-items: center; margin-bottom: space(2); }
+  &__type { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; color: $color-terracotta; }
+  &__name { font-size: clamp(1.8rem, 4vw, 2.4rem); }
+  &__actions { display: flex; flex-wrap: wrap; gap: space(2); margin-top: space(5); } }
+.meta { display: grid; gap: space(4); grid-template-columns: repeat(2, 1fr); margin: space(5) 0 0; padding: space(4) 0 0; border-top: 1px solid $color-line; @include respond(md) { grid-template-columns: repeat(3, 1fr); }
+  dt { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: $color-muted; font-weight: 600; } dd { margin: 2px 0 0; font-weight: 600; color: $color-forest-dark; word-break: break-word; } }

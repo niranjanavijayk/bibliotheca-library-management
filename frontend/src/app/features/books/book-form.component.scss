@@ -1,0 +1,6 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+.bf { display: grid; gap: space(5); @include respond(sm) { grid-template-columns: 150px 1fr; }
+  &__preview { display: flex; flex-direction: column; gap: space(2); align-items: center; app-book-cover { width: 130px; } .field__hint { text-align: center; } }
+  &__fields { display: flex; flex-direction: column; gap: space(4); }
+  &__footer { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: space(2); border-top: 1px solid $color-line; padding-top: space(4); } }

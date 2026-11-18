@@ -1,0 +1,66 @@
+<a routerLink="/app/books" class="back"><app-icon name="back" [size]="16" /> Back to the shelves</a>
+
+@if (loading()) {
+  <div class="loading"><div class="spinner"></div></div>
+} @else if (error()) {
+  <app-empty-state title="Book not found" [text]="error() ?? ''"><a routerLink="/app/books" class="btn btn--primary">Back to books</a></app-empty-state>
+} @else {
+  @if (book(); as b) {
+  <section class="detail card">
+    <app-book-cover class="detail__cover" [title]="b.title" [author]="b.author" [src]="b.coverUrl" size="lg" />
+    <div class="detail__body">
+      <div class="detail__tags">
+        <span class="detail__category">{{ b.category }}</span>
+        <app-status-badge [status]="b.available ? 'available' : 'unavailable'" [label]="b.available ? 'Available' : 'All copies out'" />
+      </div>
+      <h1 class="detail__title">{{ b.title }}</h1>
+      <p class="detail__author">by {{ b.author }}</p>
+      @if (b.description) { <p class="detail__desc">{{ b.description }}</p> }
+
+      <dl class="meta">
+        <div><dt>ISBN</dt><dd>{{ b.isbn }}</dd></div>
+        <div><dt>Published</dt><dd>{{ b.publishedYear || '—' }}</dd></div>
+        <div><dt>Copies</dt><dd>{{ b.availableCopies }} of {{ b.totalCopies }} available</dd></div>
+        <div><dt>Added</dt><dd>{{ b.createdAt | date: 'd MMM yyyy' }}</dd></div>
+      </dl>
+
+      <div class="detail__actions">
+        <button type="button" class="btn btn--accent" [disabled]="!b.available" (click)="issuing.set(true)"><app-icon name="loans" /> Issue this book</button>
+        <button type="button" class="btn btn--ghost" (click)="editing.set(true)"><app-icon name="edit" /> Edit</button>
+        <button type="button" class="btn btn--ghost" (click)="remove()"><app-icon name="trash" /> Delete</button>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="section-title">Borrowing history</h2>
+  @if (history().length) {
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Member</th><th>Issued</th><th>Due</th><th>Returned</th><th>Status</th><th>Fine</th><th></th></tr></thead>
+        <tbody>
+          @for (l of history(); track l.id) {
+            <tr [class.table__row--overdue]="l.status === 'overdue'">
+              <td><a class="link" [routerLink]="['/app/members', l.memberId]">{{ l.memberName }}</a></td>
+              <td>{{ l.issuedAt | date: 'd MMM yyyy' }}</td>
+              <td>{{ l.dueDate | date: 'd MMM yyyy' }}</td>
+              <td>{{ l.returnedAt ? (l.returnedAt | date: 'd MMM yyyy') : '—' }}</td>
+              <td><app-status-badge [status]="l.status" [label]="l | dueLabel" /></td>
+              <td>{{ l.fine ? (l.fine | currency: 'INR' : 'symbol' : '1.0-0') : '—' }}</td>
+              <td>
+                @if (l.status !== 'returned') {
+                  <div class="table__actions"><button type="button" class="btn btn--ghost btn--sm" (click)="returnLoan(l)"><app-icon name="return" [size]="14" /> Return</button></div>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <app-empty-state title="Never borrowed" text="This book hasn't been issued to anyone yet." />
+  }
+
+  @if (editing()) { <app-book-form [book]="b" [categories]="categories()" (saved)="onSaved()" (closed)="editing.set(false)" /> }
+  @if (issuing()) { <app-issue-loan-modal [book]="b" (issued)="onIssued()" (closed)="issuing.set(false)" /> }
+}
+}

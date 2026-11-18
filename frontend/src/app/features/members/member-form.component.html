@@ -1,0 +1,43 @@
+<app-modal [title]="member() ? 'Edit member' : 'Register a member'" (closed)="closed.emit()">
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate style="display:flex;flex-direction:column;gap:1rem">
+    <div class="field">
+      <label class="field__label" for="mf-name">Full name <span class="field__label-req">*</span></label>
+      <input id="mf-name" class="field__input" [class.field__input--error]="error('name', 'Name')" formControlName="name" />
+      @if (error('name', 'Name'); as msg) { <span class="field__error">{{ msg }}</span> }
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label class="field__label" for="mf-email">Email <span class="field__label-req">*</span></label>
+        <input id="mf-email" type="email" class="field__input" [class.field__input--error]="error('email', 'Email')" formControlName="email" />
+        @if (error('email', 'Email'); as msg) { <span class="field__error">{{ msg }}</span> }
+      </div>
+      <div class="field">
+        <label class="field__label" for="mf-phone">Phone <span class="field__label-req">*</span></label>
+        <input id="mf-phone" class="field__input" placeholder="+91 98470 11223" [class.field__input--error]="error('phone', 'Phone')" formControlName="phone" />
+        @if (error('phone', 'Phone'); as msg) { <span class="field__error">{{ msg }}</span> }
+      </div>
+    </div>
+    <div class="field">
+      <label class="field__label" for="mf-address">Address</label>
+      <textarea id="mf-address" rows="2" class="field__input" formControlName="address"></textarea>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label class="field__label" for="mf-type">Membership</label>
+        <select id="mf-type" class="field__input" formControlName="membershipType">
+          <option value="Standard">Standard</option><option value="Premium">Premium</option><option value="Student">Student</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="mf-status">Status</label>
+        <select id="mf-status" class="field__input" formControlName="status">
+          <option value="active">Active</option><option value="suspended">Suspended</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:.5rem;border-top:1px solid #d8c6a4;padding-top:1rem">
+      <button type="button" class="btn btn--ghost" (click)="closed.emit()">Cancel</button>
+      <button type="submit" class="btn btn--primary" [disabled]="saving()">{{ saving() ? 'Saving…' : member() ? 'Save changes' : 'Register member' }}</button>
+    </div>
+  </form>
+</app-modal>

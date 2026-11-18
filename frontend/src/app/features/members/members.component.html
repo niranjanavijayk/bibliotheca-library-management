@@ -1,0 +1,65 @@
+<app-page-header title="Members" subtitle="The readers who make the library what it is.">
+  <button type="button" class="btn btn--accent" (click)="openAdd()"><app-icon name="plus" /> Register member</button>
+</app-page-header>
+
+<section class="toolbar" aria-label="Member filters">
+  <div class="toolbar__search">
+    <app-icon name="search" />
+    <input class="field__input" type="search" placeholder="Search by name, email or phone…" aria-label="Search members"
+           [ngModel]="q()" (ngModelChange)="setValue(q, $event)" />
+  </div>
+  <select class="field__input toolbar__select" aria-label="Filter by status" [ngModel]="status()" (ngModelChange)="setValue(status, $event)">
+    <option value="">All statuses</option><option value="active">Active</option><option value="suspended">Suspended</option>
+  </select>
+  <select class="field__input toolbar__select" aria-label="Sort by" [ngModel]="sort()" (ngModelChange)="setValue(sort, $event)">
+    <option value="name">Sort: Name</option><option value="joined">Sort: Joined</option><option value="loans">Sort: Active loans</option>
+  </select>
+  <button type="button" class="btn btn--ghost" (click)="toggleOrder()">{{ order() === 'asc' ? '↑ Ascending' : '↓ Descending' }}</button>
+</section>
+
+@if (loading() && !members().length) {
+  <div class="loading"><div class="spinner"></div></div>
+} @else if (error()) {
+  <div class="card members__error"><app-icon name="alert" [size]="24" /> {{ error() }}
+    <button type="button" class="btn btn--primary" (click)="reload()">Retry</button></div>
+} @else if (!members().length) {
+  <app-empty-state [title]="hasFilters() ? 'No members match your search' : 'No members yet'"
+                   [text]="hasFilters() ? 'Try a different search or clear the filters.' : 'Register your first member to start lending books.'">
+    <button type="button" class="btn btn--accent" (click)="openAdd()">Register member</button>
+  </app-empty-state>
+} @else {
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Member</th><th>Contact</th><th>Membership</th><th>Status</th><th>Loans</th><th>Joined</th><th></th></tr></thead>
+      <tbody>
+        @for (m of members(); track m.id) {
+          <tr>
+            <td>
+              <div class="who">
+                <span class="who__avatar">{{ initials(m.name) }}</span>
+                <a class="table__strong link" [routerLink]="['/app/members', m.id]">{{ m.name }}</a>
+              </div>
+            </td>
+            <td>{{ m.email }}<br /><span class="table__muted">{{ m.phone }}</span></td>
+            <td>{{ m.membershipType }}</td>
+            <td><app-status-badge [status]="m.status" /></td>
+            <td>{{ m.activeLoans }}</td>
+            <td class="table__muted">{{ m.joinedAt | date: 'd MMM yyyy' }}</td>
+            <td>
+              <div class="table__actions">
+                <a class="btn btn--ghost btn--icon" [routerLink]="['/app/members', m.id]" aria-label="View member"><app-icon name="eye" /></a>
+                <button type="button" class="btn btn--ghost btn--icon" aria-label="Edit member" (click)="openEdit(m)"><app-icon name="edit" /></button>
+                <button type="button" class="btn btn--ghost btn--icon" aria-label="Issue a book" [disabled]="m.status !== 'active'" (click)="issuing.set(m)"><app-icon name="loans" /></button>
+                <button type="button" class="btn btn--ghost btn--icon" aria-label="Remove member" (click)="remove(m)"><app-icon name="trash" /></button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-pagination [page]="page()" [pageSize]="pageSize" [total]="total()" (pageChange)="goToPage($event)" />
+}
+
+@if (formOpen()) { <app-member-form [member]="editing()" (saved)="onSaved()" (closed)="formOpen.set(false)" /> }
+@if (issuing(); as m) { <app-issue-loan-modal [member]="m" (issued)="onIssued()" (closed)="issuing.set(null)" /> }

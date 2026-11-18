@@ -1,0 +1,101 @@
+<app-page-header [title]="greeting() + ', Librarian'" subtitle="Here is what's happening on the shelves today.">
+  <a routerLink="/app/loans" class="btn btn--accent"><app-icon name="loans" /> Issue a book</a>
+  <a routerLink="/app/books" class="btn btn--ghost"><app-icon name="books" /> Browse books</a>
+</app-page-header>
+
+@if (loading()) {
+  <div class="loading"><div class="spinner"></div></div>
+} @else if (error()) {
+  <div class="card dash__error">
+    <app-icon name="alert" [size]="26" />
+    <div><h3>We couldn't load the dashboard</h3><p>{{ error() }}</p></div>
+    <button type="button" class="btn btn--primary" (click)="load()">Try again</button>
+  </div>
+} @else {
+  @if (stats(); as s) {
+  <section class="dash__stats">
+    <app-stat-card label="Total books" [value]="s.totalBooks" [hint]="s.totalCopies + ' copies on record'" icon="books" tone="forest" />
+    <app-stat-card label="Total members" [value]="s.totalMembers" hint="Registered readers" icon="members" tone="gold" />
+    <app-stat-card label="Currently issued" [value]="s.issuedBooks" hint="Books out on loan" icon="loans" tone="terracotta" />
+    <app-stat-card label="Overdue" [value]="s.overdueBooks" [hint]="s.overdueBooks ? 'Need attention' : 'All on time'" icon="alert" tone="danger" />
+  </section>
+
+  <div class="dash__grid">
+    <section class="card dash__panel">
+      <h2 class="card__title">Shelf availability</h2>
+      <div class="meter" role="img" [attr.aria-label]="availabilityPct() + '% of copies available'">
+        <div class="meter__fill" [style.width.%]="availabilityPct()"></div>
+      </div>
+      <p class="dash__meter-text"><strong>{{ s.availableCopies }}</strong> of {{ s.totalCopies }} copies are on the shelf ({{ availabilityPct() }}%)</p>
+
+      <h2 class="card__title dash__subtitle">Books by category</h2>
+      @if (s.categories.length) {
+        <ul class="bars">
+          @for (c of s.categories; track c.name; let i = $index) {
+            <li class="bars__row">
+              <span class="bars__label">{{ c.name }}</span>
+              <span class="bars__track"><span [class]="'bars__fill bars__fill--' + (i % 4)" [style.width.%]="(c.count / maxCategory()) * 100"></span></span>
+              <span class="bars__count">{{ c.count }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="table__muted">Add books to see the category breakdown.</p>
+      }
+    </section>
+
+    <section class="card dash__panel">
+      <div class="dash__panel-head">
+        <h2 class="card__title">Needs attention</h2>
+        <a routerLink="/app/loans" class="link">All loans →</a>
+      </div>
+      @if (overdue().length) {
+        <ul class="feed">
+          @for (l of overdue().slice(0, 5); track l.id) {
+            <li class="feed__item">
+              <app-book-cover [title]="l.bookTitle" [author]="l.bookAuthor" [src]="l.bookCover" size="xs" />
+              <div class="feed__text">
+                <a class="feed__title" [routerLink]="['/app/books', l.bookId]">{{ l.bookTitle }}</a>
+                <span class="table__muted">{{ l.memberName }} · due {{ l.dueDate | date: 'd MMM' }}</span>
+              </div>
+              <div class="feed__side">
+                <app-status-badge status="overdue" [label]="l | dueLabel" />
+                <span class="feed__fine">Fine {{ l.fine | currency: 'INR' : 'symbol' : '1.0-0' }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <app-empty-state title="Everything is on time" text="No overdue loans right now. Lovely." />
+      }
+    </section>
+  </div>
+
+  <section class="card dash__panel dash__recent">
+    <div class="dash__panel-head">
+      <h2 class="card__title">Recent activity</h2>
+    </div>
+    @if (s.recentLoans.length) {
+      <ul class="feed">
+        @for (l of s.recentLoans; track l.id) {
+          <li class="feed__item">
+            <app-book-cover [title]="l.bookTitle" [author]="l.bookAuthor" [src]="l.bookCover" size="xs" />
+            <div class="feed__text">
+              <a class="feed__title" [routerLink]="['/app/books', l.bookId]">{{ l.bookTitle }}</a>
+              <span class="table__muted">
+                <a class="link" [routerLink]="['/app/members', l.memberId]">{{ l.memberName }}</a> ·
+                issued {{ l.issuedAt | date: 'd MMM yyyy' }}
+              </span>
+            </div>
+            <app-status-badge [status]="l.status" />
+          </li>
+        }
+      </ul>
+    } @else {
+      <app-empty-state title="No loans yet" text="Issue your first book to start building borrowing history.">
+        <a routerLink="/app/loans" class="btn btn--primary">Issue a book</a>
+      </app-empty-state>
+    }
+  </section>
+}
+}

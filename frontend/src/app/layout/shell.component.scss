@@ -1,0 +1,36 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.shell {
+  min-height: 100vh;
+  &__main { @include respond(md) { margin-left: $sidebar-width; } }
+  &__content { padding: space(5) space(4) space(8); max-width: 1280px; margin: 0 auto; @include respond(md) { padding: space(6) space(6) space(8); } }
+  &__backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 40; @include respond(md) { display: none; } }
+}
+
+.sidebar {
+  position: fixed; inset: 0 auto 0 0; width: $sidebar-width; z-index: 50; display: flex; flex-direction: column; gap: space(5);
+  padding: space(5) space(4); color: #e9efe9; transform: translateX(-100%); transition: transform 0.25s ease;
+  background: linear-gradient(180deg, $color-forest 0%, $color-forest-dark 100%);
+  @include respond(md) { transform: none; }
+  &--open { transform: none; }
+
+  &__brand { display: flex; align-items: center; gap: space(3); padding: space(2); }
+  &__logo { font-size: 1.8rem; background: rgba(255, 255, 255, 0.12); border-radius: 12px; width: 46px; height: 46px; display: grid; place-items: center; }
+  &__brand-text { display: flex; flex-direction: column; line-height: 1.2;
+    strong { font-family: $font-display; font-size: 1.3rem; color: #fff; }
+    small { font-size: 0.7rem; color: #b9cdbf; letter-spacing: 0.04em; } }
+  &__nav { display: flex; flex-direction: column; gap: space(1); flex: 1; }
+  &__link { display: flex; align-items: center; gap: space(3); padding: 0.7rem 0.9rem; border-radius: $radius-sm; font-weight: 500; color: #cfdcd2;
+    transition: background 0.15s, color 0.15s; @include focus-ring($color-gold);
+    &:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+    &--active { background: $color-terracotta; color: #fff; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25); }
+    &--footer { font-size: 0.85rem; opacity: 0.8; } }
+}
+
+.topbar {
+  display: flex; align-items: center; gap: space(3); padding: space(3) space(4); background: $color-paper; border-bottom: 1px solid $color-line;
+  position: sticky; top: 0; z-index: 30;
+  @include respond(md) { display: none; }
+  &__title { font-family: $font-display; font-weight: 700; font-size: 1.2rem; color: $color-forest-dark; }
+}

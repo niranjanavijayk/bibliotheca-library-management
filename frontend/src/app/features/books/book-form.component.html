@@ -1,0 +1,65 @@
+<app-modal [title]="book() ? 'Edit book' : 'Add a new book'" [wide]="true" (closed)="closed.emit()">
+  <form class="bf" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="bf__preview">
+      <app-book-cover [title]="form.value.title || 'Untitled'" [author]="form.value.author || ''" [src]="form.value.coverUrl || ''" size="md" />
+      <p class="field__hint">Leave the cover URL empty to use the ISBN cover automatically.</p>
+    </div>
+
+    <div class="bf__fields">
+      <div class="field">
+        <label class="field__label" for="bf-title">Title <span class="field__label-req">*</span></label>
+        <input id="bf-title" class="field__input" [class.field__input--error]="error('title', 'Title')" formControlName="title" />
+        @if (error('title', 'Title'); as msg) { <span class="field__error">{{ msg }}</span> }
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="bf-author">Author <span class="field__label-req">*</span></label>
+        <input id="bf-author" class="field__input" [class.field__input--error]="error('author', 'Author')" formControlName="author" />
+        @if (error('author', 'Author'); as msg) { <span class="field__error">{{ msg }}</span> }
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label class="field__label" for="bf-category">Category <span class="field__label-req">*</span></label>
+          <input id="bf-category" class="field__input" list="bf-cats" [class.field__input--error]="error('category', 'Category')" formControlName="category" />
+          <datalist id="bf-cats">@for (c of categories(); track c) { <option [value]="c"></option> }</datalist>
+          @if (error('category', 'Category'); as msg) { <span class="field__error">{{ msg }}</span> }
+        </div>
+        <div class="field">
+          <label class="field__label" for="bf-isbn">ISBN <span class="field__label-req">*</span></label>
+          <input id="bf-isbn" class="field__input" placeholder="978-0-xxx-xxxxx-x" [class.field__input--error]="error('isbn', 'ISBN')" formControlName="isbn" />
+          @if (error('isbn', 'ISBN'); as msg) { <span class="field__error">{{ msg }}</span> }
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label class="field__label" for="bf-year">Published year</label>
+          <input id="bf-year" type="number" class="field__input" [class.field__input--error]="error('publishedYear', 'Year')" formControlName="publishedYear" />
+          @if (error('publishedYear', 'Year'); as msg) { <span class="field__error">{{ msg }}</span> }
+        </div>
+        <div class="field">
+          <label class="field__label" for="bf-copies">Total copies <span class="field__label-req">*</span></label>
+          <input id="bf-copies" type="number" class="field__input" [class.field__input--error]="error('totalCopies', 'Copies')" formControlName="totalCopies" />
+          @if (error('totalCopies', 'Copies'); as msg) { <span class="field__error">{{ msg }}</span> }
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="bf-cover">Cover image URL</label>
+        <input id="bf-cover" class="field__input" placeholder="https://..." [class.field__input--error]="error('coverUrl', 'Cover URL')" formControlName="coverUrl" />
+        @if (error('coverUrl', 'Cover URL'); as msg) { <span class="field__error">{{ msg }}</span> }
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="bf-desc">Description</label>
+        <textarea id="bf-desc" rows="3" class="field__input" formControlName="description"></textarea>
+      </div>
+    </div>
+
+    <div class="bf__footer">
+      <button type="button" class="btn btn--ghost" (click)="closed.emit()">Cancel</button>
+      <button type="submit" class="btn btn--primary" [disabled]="saving()">{{ saving() ? 'Saving…' : book() ? 'Save changes' : 'Add book' }}</button>
+    </div>
+  </form>
+</app-modal>

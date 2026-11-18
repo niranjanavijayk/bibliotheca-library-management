@@ -1,0 +1,4 @@
+@use 'variables' as *;
+.il { display: flex; flex-direction: column; gap: space(4);
+  &__fixed { display: flex; gap: space(3); align-items: center; padding: space(3); background: $color-forest-light; border: 1px solid $color-line; border-radius: $radius-sm; }
+  &__footer { display: flex; justify-content: flex-end; gap: space(2); border-top: 1px solid $color-line; padding-top: space(4); } }

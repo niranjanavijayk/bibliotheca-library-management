@@ -1,0 +1,7 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+.page-header { display: flex; flex-direction: column; gap: space(3); margin-bottom: space(6);
+  @include respond(sm) { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  &__title { font-size: 2rem; }
+  &__subtitle { color: $color-muted; margin-top: space(1); }
+  &__actions { display: flex; gap: space(2); flex-wrap: wrap; } }
