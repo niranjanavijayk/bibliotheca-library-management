@@ -21,7 +21,7 @@
 | **Validation & feedback** | Required-field validation, server-side validation mapped onto form fields, toast notifications for success/failure, confirmation pop-ups for destructive actions. |
 
 ### Additional features (beyond the brief)
-- 🏛️ Cinematic landing page with an antique bookshelf, shown before the dashboard
+- 🏛️ Landing page with an antique bookshelf, shown before the dashboard
 - 📖 Visual **bookshelf view** with cover images (Open Library covers by ISBN, generated fallback cover when none exists) + table view toggle
 - ⏳ **Loan renewals** (up to 2×, 7 days each, not for overdue loans)
 - 💰 **Late fees** (₹2/day, configurable) calculated automatically
